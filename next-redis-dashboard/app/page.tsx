@@ -6,7 +6,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function fetchMetrics() {
-      const res = await fetch("/api/metrics");
+      const res = await fetch("./api/metrics/routes.ts");
       const data = await res.json();
       setMetrics(data);
     }
@@ -14,7 +14,7 @@ export default function Dashboard() {
   }, []);
 
   async function handleMetric(metric: string) {
-    await fetch("/api/metrics", {
+    await fetch("./api/metrics/routes.ts", {
       method: "POST",
       body: JSON.stringify({ metric, value: 1 }),
       headers: { "Content-Type": "application/json" },
