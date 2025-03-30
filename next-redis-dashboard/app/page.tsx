@@ -1,36 +1,32 @@
 "use client";
-import { useEffect, useState } from "react";
 
-export default function Dashboard() {
-  const [metrics, setMetrics] = useState({ visits: 0, clicks: 0, signups: 0 });
+import { useState, useEffect } from "react";
+import { getClickCount, incrementClickCount } from "./actions/click-action";
 
+export default function ClickCounter() {
+  const [clicks, setClicks] = useState(0);
+
+  // Obtener la cantidad de clics al cargar la página
   useEffect(() => {
-    async function fetchMetrics() {
-      const res = await fetch("./api/metrics/routes.ts");
-      const data = await res.json();
-      setMetrics(data);
+    async function fetchClicks() {
+      const count = await getClickCount();
+      setClicks(count);
     }
-    fetchMetrics();
+    fetchClicks();
   }, []);
 
-  async function handleMetric(metric: string) {
-    await fetch("./api/metrics/routes.ts", {
-      method: "POST",
-      body: JSON.stringify({ metric, value: 1 }),
-      headers: { "Content-Type": "application/json" },
-    });
-    location.reload();
-  }
+  // Función para manejar el clic en el botón
+  const handleClick = async () => {
+    const newCount = await incrementClickCount();
+    setClicks(newCount);
+  };
 
   return (
-    <div className="p-10">
-      <h1 className="text-2xl font-bold">Dashboard de Métricas</h1>
-      <p>Visitas: {metrics.visits}</p>
-      <p>Clicks: {metrics.clicks}</p>
-      <p>Registros: {metrics.signups}</p>
-      <button onClick={() => handleMetric("visits")} className="p-2 m-2 bg-blue-500 text-white">Sumar Visita</button>
-      <button onClick={() => handleMetric("clicks")} className="p-2 m-2 bg-green-500 text-white">Sumar Click</button>
-      <button onClick={() => handleMetric("signups")} className="p-2 m-2 bg-red-500 text-white">Sumar Registro</button>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h1>🖱️ Contador de Clics</h1>
+      <button onClick={handleClick} style={{ fontSize: "18px", padding: "10px 20px" }}>
+        Clics: {clicks}
+      </button>
     </div>
   );
 }
