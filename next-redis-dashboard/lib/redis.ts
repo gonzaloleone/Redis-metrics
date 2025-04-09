@@ -1,8 +1,17 @@
-import Redis from "ioredis"; 
+import Redis from "ioredis";
 
 const redis = new Redis({
-  host: "127.0.0.1", 
-  port: 6379, 
+  host: process.env.REDIS_HOST || "127.0.0.1",
+  port: Number(process.env.REDIS_PORT) || 6379,
+  password: process.env.REDIS_PASSWORD || undefined,
 });
 
-export default redis;
+redis.on("connect", () => {
+  console.log("Conectado a Redis");
+});
+
+redis.on("error", (err) => {
+  console.error("Error en Redis:", err);
+});
+
+export { redis };
